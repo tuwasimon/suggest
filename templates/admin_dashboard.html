@@ -1,0 +1,79 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2 class="mb-0">
+        <i class="fas fa-tachometer-alt text-primary me-2"></i>Dashboard
+    </h2>
+    <a href="{{ url_for('admin_logout') }}" class="btn btn-sm btn-outline-danger">
+        <i class="fas fa-sign-out-alt"></i>
+    </a>
+  
+<a href="{{ url_for('reset_password') }}" class="btn btn-outline-warning">
+    <i class="fas fa-key me-2"></i>Reset Password
+</a>
+</div>
+
+<div class="card mb-4">
+    <div class="card-body">
+        <h5 class="card-title">Stats</h5>
+        <div class="d-flex justify-content-around text-center">
+            <div>
+                <div class="h4">{{ suggestions|length }}</div>
+                <small class="text-muted">Total Suggestions</small>
+            </div>
+            <div>
+                <div class="h4">{{ today_count }}</div>
+                <small class="text-muted">Today</small>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="d-grid gap-2 mb-4">
+    <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#clearModal">
+        <i class="fas fa-trash-alt me-2"></i> Clear All Suggestions
+    </button>
+</div>
+
+<!-- Clear Confirmation Modal -->
+<div class="modal fade" id="clearModal" tabindex="-1" aria-labelledby="clearModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="clearModalLabel">Confirm Clear All</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                Are you sure you want to delete ALL suggestions? This action cannot be undone.
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <form action="{{ url_for('clear_suggestions') }}" method="POST">
+                    <button type="submit" class="btn btn-danger">Clear All</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<h5 class="mb-3">All Suggestions</h5>
+
+{% if suggestions %}
+<div class="list-group mb-5">
+    {% for suggestion in suggestions %}
+    <div class="list-group-item suggestion-card mb-2">
+        <div class="d-flex justify-content-between">
+            <p class="mb-1">{{ suggestion.message }}</p>
+            <small class="text-muted">{{ suggestion.timestamp.strftime('%b %d, %H:%M') }}</small>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% else %}
+<div class="alert alert-info">
+    <i class="fas fa-info-circle me-2"></i> No suggestions yet.
+</div>
+{% endif %}
+{% endblock %}
